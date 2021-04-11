@@ -8,6 +8,18 @@ impl Vec3 {
         Self(x, y, z)
     }
 
+    pub fn x(&self) -> f64 {
+        self.0
+    }
+
+    pub fn y(&self) -> f64 {
+        self.1
+    }
+
+    pub fn z(&self) -> f64 {
+        self.2
+    }
+
     fn len_squared(self) -> f64 {
         self.0 * self.0 + self.1 * self.1 + self.2 * self.2
     }
@@ -87,6 +99,8 @@ impl Color {
         )
     }
 }
+
+pub type Point3 = Vec3;
 
 #[cfg(test)]
 mod tests {
