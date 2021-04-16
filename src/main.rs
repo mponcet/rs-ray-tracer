@@ -70,9 +70,7 @@ fn main() {
     world.add_object(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0));
 
     // Camera
-    let viewport_height = 2.0;
-    let viewport_width = viewport_height * ASPECT_RATIO;
-    let camera = Camera::new(viewport_width, viewport_height);
+    let camera = Camera::new();
 
     let mut pixels: Vec<Color> = Vec::with_capacity(IMAGE_WIDTH * IMAGE_HEIGHT);
 
