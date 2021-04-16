@@ -14,3 +14,9 @@ impl Ray {
         self.origin + self.direction * t
     }
 }
+
+pub struct HitRecord {
+    pub point: Point3,
+    pub normal: Vec3,
+    pub t: f64, // point = A + tb
+}

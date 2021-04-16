@@ -4,10 +4,13 @@ mod camera;
 mod models;
 mod ray;
 mod vec3;
+mod world;
 
 use crate::camera::Camera;
 use crate::models::Sphere;
+use crate::ray::Ray;
 use crate::vec3::{Color, Point3};
+use crate::world::World;
 
 struct PPMImage {
     width: usize,
@@ -50,14 +53,26 @@ const ASPECT_RATIO: f64 = 16.0 / 9.0;
 const IMAGE_WIDTH: usize = 800;
 const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
 
+fn ray_color(ray: &Ray, world: &World) -> Color {
+    if let Some(hitrec) = world.hit(ray) {
+        (hitrec.normal + Color::new(1.0, 1.0, 1.0)) * 0.5
+    } else {
+        let unit_direction = ray.direction.unit_vector();
+        let t = 0.5 * (unit_direction.y() + 1.0);
+        Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
+    }
+}
+
 fn main() {
+    // World
+    let mut world = World::new();
+    world.add_object(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5));
+    world.add_object(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0));
+
     // Camera
     let viewport_height = 2.0;
     let viewport_width = viewport_height * ASPECT_RATIO;
     let camera = Camera::new(viewport_width, viewport_height);
-
-    // Sphere
-    let sphere = Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5);
 
     let mut pixels: Vec<Color> = Vec::with_capacity(IMAGE_WIDTH * IMAGE_HEIGHT);
 
@@ -69,15 +84,7 @@ fn main() {
 
 
 
-            let color = if let Some(t) = sphere.hit(&ray) {
-                let normal = (ray.point_at(t) - Point3::new(0.0, 0.0, -1.0)).unit_vector();
-                Color::new(normal.x() + 1.0, normal.y() + 1.0, normal.z() + 1.0) * 0.5
-            } else {
-                let unit_direction = ray.direction.unit_vector();
-                let t = 0.5 * unit_direction.y() + 1.0;
-                Color::new(1.0, 1.0, 1.0) * (1.0 - t) + Color::new(0.5, 0.7, 1.0) * t
-            };
-
+            let color = ray_color(&ray, &world);
             pixels.push(color);
         }
     }
