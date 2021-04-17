@@ -1,5 +1,7 @@
 use std::ops::{Add, Div, Mul, Neg, Sub};
 
+use rand::Rng;
+
 #[derive(Copy, Clone, Debug, PartialEq)]
 pub struct Vec3(f64, f64, f64);
 
@@ -45,6 +47,34 @@ impl Vec3 {
     #[allow(dead_code)]
     pub fn unit_vector(self) -> Self {
         self / self.len()
+    }
+
+    pub fn random(min: f64, max: f64) -> Self {
+        let mut rng = rand::thread_rng();
+
+        Self(
+            rng.gen_range(min..=max),
+            rng.gen_range(min..=max),
+            rng.gen_range(min..=max),
+        )
+    }
+
+    fn random_in_unit_sphere() -> Self {
+        loop {
+            let p = Self::random(-1.0, 1.0);
+            if p.len_squared() >= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+
+    pub fn random_unit_vector() -> Self {
+        Self::random_in_unit_sphere().unit_vector()
+    }
+
+    pub fn near_zero(self) -> bool {
+        self.0.abs() < f64::EPSILON && self.1.abs() < f64::EPSILON && self.2.abs() < f64::EPSILON
     }
 }
 

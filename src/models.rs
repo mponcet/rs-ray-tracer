@@ -1,14 +1,20 @@
+use crate::materials::Material;
 use crate::ray::{HitRecord, Ray};
 use crate::vec3::Point3;
 
-pub struct Sphere {
+pub struct Sphere<'a> {
     center: Point3,
     radius: f64,
+    material: &'a dyn Material,
 }
 
-impl Sphere {
-    pub fn new(center: Point3, radius: f64) -> Self {
-        Self { center, radius }
+impl<'a> Sphere<'a> {
+    pub fn new(center: Point3, radius: f64, material: &'a dyn Material) -> Self {
+        Self {
+            center,
+            radius,
+            material,
+        }
     }
 
     pub fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
@@ -31,6 +37,7 @@ impl Sphere {
                 point,
                 normal: (point - self.center) / self.radius,
                 t,
+                material: self.material,
             });
         }
 
@@ -41,6 +48,7 @@ impl Sphere {
                 point,
                 normal: (point - self.center) / self.radius,
                 t,
+                material: self.material,
             });
         }
 

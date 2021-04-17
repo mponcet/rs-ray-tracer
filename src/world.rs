@@ -2,22 +2,22 @@ use crate::models::Sphere;
 use crate::ray::{HitRecord, Ray};
 
 // TODO: make objects generic
-pub struct World {
-    objects: Vec<Sphere>,
+pub struct World<'a> {
+    objects: Vec<&'a Sphere<'a>>,
     t_min: f64,
     t_max: f64,
 }
 
-impl World {
+impl<'a> World<'a> {
     pub fn new() -> Self {
         World {
             objects: Vec::new(),
-            t_min: 0.,
+            t_min: 0.001,
             t_max: std::f64::INFINITY,
         }
     }
 
-    pub fn add_object(&mut self, sphere: Sphere) {
+    pub fn add_object(&mut self, sphere: &'a Sphere) {
         self.objects.push(sphere);
     }
 
