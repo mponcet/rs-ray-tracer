@@ -30,28 +30,25 @@ impl<'a> Sphere<'a> {
 
         let sqrtd = discriminant.sqrt();
 
-        let t = (-half_b - sqrtd) / a;
-        if t > t_min && t < t_max {
-            let point = ray.point_at(t);
-            return Some(HitRecord {
-                point,
-                normal: (point - self.center) / self.radius,
-                t,
-                material: self.material,
-            });
+        let mut t = (-half_b - sqrtd) / a;
+        if t < t_min || t > t_max {
+            t = (-half_b + sqrtd) / a;
+            if t < t_min || t > t_max {
+                return None;
+            }
         }
 
-        let t = (-half_b + sqrtd) / a;
-        if t > t_min && t < t_max {
-            let point = ray.point_at(t);
-            return Some(HitRecord {
-                point,
-                normal: (point - self.center) / self.radius,
-                t,
-                material: self.material,
-            });
-        }
+        let point = ray.point_at(t);
+        let normal = (point - self.center) / self.radius;
+        let front_face = normal.dot(ray.direction) < 0.0;
+        let normal = if front_face { normal } else { -normal };
 
-        None
+        Some(HitRecord {
+            point,
+            normal,
+            front_face,
+            t,
+            material: self.material,
+        })
     }
 }

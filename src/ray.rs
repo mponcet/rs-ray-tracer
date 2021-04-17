@@ -1,5 +1,5 @@
 use crate::materials::Material;
-use crate::vec3::{Color, Point3, Vec3};
+use crate::vec3::{Point3, Vec3};
 
 pub struct Ray {
     pub origin: Point3,
@@ -19,6 +19,7 @@ impl Ray {
 pub struct HitRecord<'a> {
     pub point: Point3,
     pub normal: Vec3,
+    pub front_face: bool,
     pub t: f64, // point = A + tb
     pub material: &'a dyn Material,
 }

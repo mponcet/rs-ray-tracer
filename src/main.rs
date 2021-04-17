@@ -1,6 +1,5 @@
 use rand::Rng;
 use std::fmt;
-use vec3::Vec3;
 
 mod camera;
 mod materials;
@@ -10,7 +9,7 @@ mod vec3;
 mod world;
 
 use crate::camera::Camera;
-use crate::materials::Lambertian;
+use crate::materials::{Dielectric, Lambertian, Metal};
 use crate::models::Sphere;
 use crate::ray::Ray;
 use crate::vec3::{Color, Point3};
@@ -82,9 +81,21 @@ fn main() {
     let material_ground = Lambertian {
         albedo: Color::new(0.8, 0.8, 0.0),
     };
+    let material_center = Lambertian {
+        albedo: Color::new(0.1, 0.2, 0.5),
+    };
+    let material_left = Dielectric {
+        refraction_index: 1.5,
+    };
+    let material_right = Metal {
+        albedo: Color::new(0.8, 0.6, 0.2),
+        fuzz: 0.0,
+    };
     let spheres = vec![
-        Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5, &material_ground),
         Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0, &material_ground),
+        Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5, &material_center),
+        Sphere::new(Point3::new(-1.0, 0.0, -1.0), 0.5, &material_left),
+        Sphere::new(Point3::new(1.0, 0.0, -1.0), 0.5, &material_right),
     ];
 
     spheres.iter().for_each(|sphere| world.add_object(sphere));
