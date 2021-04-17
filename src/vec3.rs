@@ -92,7 +92,7 @@ impl Neg for Vec3 {
     type Output = Self;
 
     fn neg(self) -> Self::Output {
-       Self(-self.0, -self.1, -self.2)
+        Self(-self.0, -self.1, -self.2)
     }
 }
 

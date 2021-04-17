@@ -1,5 +1,5 @@
-use crate::ray::{Ray, HitRecord};
 use crate::models::Sphere;
+use crate::ray::{HitRecord, Ray};
 
 // TODO: make objects generic
 pub struct World {
@@ -10,7 +10,11 @@ pub struct World {
 
 impl World {
     pub fn new() -> Self {
-        World { objects: Vec::new(), t_min: 0., t_max: std::f64::INFINITY  }
+        World {
+            objects: Vec::new(),
+            t_min: 0.,
+            t_max: std::f64::INFINITY,
+        }
     }
 
     pub fn add_object(&mut self, sphere: Sphere) {
