@@ -99,11 +99,22 @@ impl Neg for Vec3 {
 pub type Color = Vec3;
 
 impl Color {
+    #[inline]
+    fn clamp(x: f64, min: f64, max: f64) -> f64 {
+        if x < min {
+            min
+        } else if x > max {
+            max
+        } else {
+            x
+        }
+    }
+
     pub fn to_rgb(&self) -> (u8, u8, u8) {
         (
-            (255.99 * self.0) as u8,
-            (255.99 * self.1) as u8,
-            (255.99 * self.2) as u8,
+            (256.0 * Self::clamp(self.0, 0.0, 0.999)) as u8,
+            (256.0 * Self::clamp(self.1, 0.0, 0.999)) as u8,
+            (256.0 * Self::clamp(self.2, 0.0, 0.999)) as u8,
         )
     }
 }

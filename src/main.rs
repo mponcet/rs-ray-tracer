@@ -1,4 +1,5 @@
 use std::fmt;
+use rand::Rng;
 
 mod camera;
 mod models;
@@ -52,6 +53,7 @@ impl fmt::Display for PPMImage {
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
 const IMAGE_WIDTH: usize = 800;
 const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
+const SAMPLES_PER_PIXEL: u32 = 100;
 
 fn ray_color(ray: &Ray, world: &World) -> Color {
     if let Some(hitrec) = world.hit(ray) {
@@ -64,6 +66,8 @@ fn ray_color(ray: &Ray, world: &World) -> Color {
 }
 
 fn main() {
+    let mut rng = rand::thread_rng();
+
     // World
     let mut world = World::new();
     world.add_object(Sphere::new(Point3::new(0.0, 0.0, -1.0), 0.5));
@@ -76,14 +80,15 @@ fn main() {
 
     for j in (0..=IMAGE_HEIGHT).rev() {
         for i in 0..IMAGE_WIDTH {
-            let u = i as f64 / (IMAGE_WIDTH - 1) as f64;
-            let v = j as f64 / (IMAGE_HEIGHT - 1) as f64;
-            let ray = camera.get_ray(u, v);
+            let mut color = Color::new(0.0, 0.0, 0.0);
+            for _ in 0..SAMPLES_PER_PIXEL {
+                let u = (i as f64 + rng.gen_range(0.0..=1.0)) / (IMAGE_WIDTH - 1) as f64;
+                let v = (j as f64 + rng.gen_range(0.0..=1.0))/ (IMAGE_HEIGHT - 1) as f64;
+                let ray = camera.get_ray(u, v);
+                color = color + ray_color(&ray, &world);
+            }
 
-
-
-            let color = ray_color(&ray, &world);
-            pixels.push(color);
+            pixels.push(color / SAMPLES_PER_PIXEL as f64);
         }
     }
 
