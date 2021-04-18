@@ -12,7 +12,7 @@ use crate::camera::Camera;
 use crate::materials::{Dielectric, Lambertian, Metal};
 use crate::models::Sphere;
 use crate::ray::Ray;
-use crate::vec3::{Color, Point3};
+use crate::vec3::{Color, Point3, Vec3};
 use crate::world::World;
 
 struct PPMImage {
@@ -101,7 +101,13 @@ fn main() {
     spheres.iter().for_each(|sphere| world.add_object(sphere));
 
     // Camera
-    let camera = Camera::new();
+    let camera = Camera::new(
+        Point3::new(0.0, 1.0, 0.0),
+        Point3::new(0.0, 0.0, -1.0),
+        Vec3::new(0.0, 1.0, 0.0),
+        90.0,
+        ASPECT_RATIO
+    );
 
     let mut pixels: Vec<Color> = Vec::with_capacity(IMAGE_WIDTH * IMAGE_HEIGHT);
 
