@@ -53,7 +53,7 @@ impl fmt::Display for PPMImage {
 }
 
 const ASPECT_RATIO: f64 = 16.0 / 9.0;
-const IMAGE_WIDTH: usize = 800;
+const IMAGE_WIDTH: usize = 1200;
 const IMAGE_HEIGHT: usize = (IMAGE_WIDTH as f64 / ASPECT_RATIO) as usize;
 const SAMPLES_PER_PIXEL: u32 = 100;
 const MAX_DEPTH: usize = 50;
@@ -101,12 +101,17 @@ fn main() {
     spheres.iter().for_each(|sphere| world.add_object(sphere));
 
     // Camera
+    let look_from = Point3::new(3.0, 3.0, 2.0);
+    let look_at = Point3::new(0.0, 0.0, -1.0);
+    let vup = Vec3::new(0.0, 1.0, 0.0);
     let camera = Camera::new(
-        Point3::new(0.0, 1.0, 0.0),
-        Point3::new(0.0, 0.0, -1.0),
-        Vec3::new(0.0, 1.0, 0.0),
-        90.0,
-        ASPECT_RATIO
+        look_from,
+        look_at,
+        vup,
+        20.0,
+        ASPECT_RATIO,
+        2.0,
+        (look_from - look_at).len(),
     );
 
     let mut pixels: Vec<Color> = Vec::with_capacity(IMAGE_WIDTH * IMAGE_HEIGHT);

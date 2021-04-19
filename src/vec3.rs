@@ -69,6 +69,18 @@ impl Vec3 {
         }
     }
 
+    pub fn random_in_unit_disk() -> Self {
+        let mut rng = rand::thread_rng();
+
+        loop {
+            let p = Self(rng.gen_range(-1.0..=1.0), rng.gen_range(-1.0..=1.0), 0.0);
+            if p.len_squared() <= 1.0 {
+                continue;
+            }
+            return p;
+        }
+    }
+
     pub fn random_unit_vector() -> Self {
         Self::random_in_unit_sphere().unit_vector()
     }
