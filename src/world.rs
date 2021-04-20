@@ -1,9 +1,8 @@
-use crate::models::Sphere;
+use crate::models::Model;
 use crate::ray::{HitRecord, Ray};
 
-// TODO: make objects generic
 pub struct World<'a> {
-    objects: Vec<&'a Sphere<'a>>,
+    objects: Vec<&'a dyn Model>,
     t_min: f64,
     t_max: f64,
 }
@@ -17,8 +16,8 @@ impl<'a> World<'a> {
         }
     }
 
-    pub fn add_object(&mut self, sphere: &'a Sphere) {
-        self.objects.push(sphere);
+    pub fn add_object(&mut self, object: &'a dyn Model) {
+        self.objects.push(object);
     }
 
     pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {

@@ -2,6 +2,10 @@ use crate::materials::Material;
 use crate::ray::{HitRecord, Ray};
 use crate::vec3::Point3;
 
+pub trait Model {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
+}
+
 pub struct Sphere<'a> {
     center: Point3,
     radius: f64,
@@ -16,8 +20,10 @@ impl<'a> Sphere<'a> {
             material,
         }
     }
+}
 
-    pub fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
+impl<'a> Model for Sphere<'a> {
+    fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         let a = ray.direction.len_squared();
         let half_b = oc.dot(ray.direction);
