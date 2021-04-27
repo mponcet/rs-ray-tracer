@@ -6,14 +6,14 @@ pub trait Model {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord>;
 }
 
-pub struct Sphere<'a> {
+pub struct Sphere<T: Material> {
     center: Point3,
     radius: f64,
-    material: &'a dyn Material,
+    material: T,
 }
 
-impl<'a> Sphere<'a> {
-    pub fn new(center: Point3, radius: f64, material: &'a dyn Material) -> Self {
+impl<T: Material> Sphere<T> {
+    pub fn new(center: Point3, radius: f64, material: T) -> Self {
         Self {
             center,
             radius,
@@ -22,7 +22,7 @@ impl<'a> Sphere<'a> {
     }
 }
 
-impl<'a> Model for Sphere<'a> {
+impl<T: Material> Model for Sphere<T> {
     fn hit(&self, ray: &Ray, t_min: f64, t_max: f64) -> Option<HitRecord> {
         let oc = ray.origin - self.center;
         let a = ray.direction.len_squared();
@@ -54,7 +54,7 @@ impl<'a> Model for Sphere<'a> {
             normal,
             front_face,
             t,
-            material: self.material,
+            material: &self.material,
         })
     }
 }
