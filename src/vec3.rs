@@ -86,7 +86,7 @@ impl Vec3 {
     }
 
     pub fn near_zero(self) -> bool {
-        self.0.abs() < f64::EPSILON && self.1.abs() < f64::EPSILON && self.2.abs() < f64::EPSILON
+        self.0.abs() < 1e-8 && self.1.abs() < 1e-8 && self.2.abs() < 1e-8
     }
 }
 
