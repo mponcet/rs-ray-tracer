@@ -1,5 +1,14 @@
-use crate::models::Model;
-use crate::ray::{HitRecord, Ray};
+use crate::{
+    materials::Lambertian,
+    models::{Model, Sphere},
+    vec3::{Color, Point3},
+};
+use crate::{
+    materials::{Dielectric, Metal},
+    ray::{HitRecord, Ray},
+};
+use itertools::Itertools;
+use rand::Rng;
 
 pub struct World {
     objects: Vec<Box<dyn Model>>,
@@ -32,5 +41,89 @@ impl World {
         }
 
         best_hitrec
+    }
+
+    pub fn random() -> Self {
+        let mut world = Self::new();
+        let mut rng = rand::thread_rng();
+
+        world.add_object(Sphere::new(
+            Point3::new(0.0, -1000.0, 0.0),
+            1000.0,
+            Lambertian {
+                albedo: Color::new(0.5, 0.5, 0.5),
+            },
+        ));
+
+        world.add_object(Sphere::new(
+            Point3::new(0.0, 1.0, 0.0),
+            1.0,
+            Dielectric {
+                refraction_index: 1.5,
+            },
+        ));
+
+        world.add_object(Sphere::new(
+            Point3::new(-4.0, 1.0, 0.0),
+            1.0,
+            Lambertian {
+                albedo: Color::new(0.4, 0.2, 0.1),
+            },
+        ));
+
+        world.add_object(Sphere::new(
+            Point3::new(4.0, 1.0, 0.0),
+            1.0,
+            Metal {
+                albedo: Color::new(0.7, 0.6, 0.5),
+                fuzz: 0.0,
+            },
+        ));
+
+        for (x, z) in (-10..6).cartesian_product(-10..10) {
+            if x == 4 || x == 0 || x == -4 {
+                continue;
+            }
+
+            let radius = rng.gen_range(0.1..0.3);
+            let p = Point3::new(
+                x as f64 + rng.gen_range(0.0..0.5),
+                radius,
+                z as f64 + rng.gen_range(0.0..0.5),
+            );
+            match rand::random::<u8>() % 5 {
+                0 => {
+                    world.add_object(Sphere::new(
+                        p,
+                        radius,
+                        Lambertian {
+                            albedo: Color::random(0.0, 1.0),
+                        },
+                    ));
+                }
+                1 => {
+                    world.add_object(Sphere::new(
+                        p,
+                        radius,
+                        Dielectric {
+                            refraction_index: 1.5,
+                        },
+                    ));
+                }
+                2 => {
+                    world.add_object(Sphere::new(
+                        p,
+                        radius,
+                        Metal {
+                            albedo: Color::random(0.0, 1.0),
+                            fuzz: rng.gen_range(0.0..0.5),
+                        },
+                    ));
+                }
+                _ => {}
+            }
+        }
+
+        world
     }
 }

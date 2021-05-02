@@ -10,8 +10,6 @@ mod vec3;
 mod world;
 
 use crate::camera::Camera;
-use crate::materials::{Dielectric, Lambertian, Metal};
-use crate::models::Sphere;
 use crate::vec3::{Color, Point3, Vec3};
 use crate::world::World;
 
@@ -54,44 +52,11 @@ impl fmt::Display for PPMImage {
 
 fn main() {
     // World
-    let mut world = World::new();
-    let material_ground = Lambertian {
-        albedo: Color::new(0.8, 0.8, 0.0),
-    };
-    let material_center = Lambertian {
-        albedo: Color::new(0.1, 0.2, 0.5),
-    };
-    let material_left = Dielectric {
-        refraction_index: 1.5,
-    };
-    let material_right = Metal {
-        albedo: Color::new(0.8, 0.6, 0.2),
-        fuzz: 0.0,
-    };
-    world.add_object(Sphere::new(
-        Point3::new(0.0, -100.5, -1.0),
-        100.0,
-        material_ground,
-    ));
-    world.add_object(Sphere::new(
-        Point3::new(0.0, 0.0, -1.0),
-        0.5,
-        material_center,
-    ));
-    world.add_object(Sphere::new(
-        Point3::new(-1.0, 0.0, -1.0),
-        0.5,
-        material_left,
-    ));
-    world.add_object(Sphere::new(
-        Point3::new(1.0, 0.0, -1.0),
-        0.5,
-        material_right,
-    ));
+    let world = World::random();
 
     // Camera
-    let look_from = Point3::new(3.0, 3.0, 2.0);
-    let look_at = Point3::new(0.0, 0.0, -1.0);
+    let look_from = Point3::new(13.0, 2.0, 3.0);
+    let look_at = Point3::new(0.0, 0.0, 0.0);
     let vup = Vec3::new(0.0, 1.0, 0.0);
     let camera = Camera::new(
         look_from,
@@ -99,8 +64,8 @@ fn main() {
         vup,
         20.0,
         config::ASPECT_RATIO,
-        2.0,
-        (look_from - look_at).len(),
+        0.1,
+        10.0,
     );
 
     let pixels = render::render(&world, &camera);
