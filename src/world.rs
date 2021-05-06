@@ -1,12 +1,8 @@
-use crate::{
-    materials::Lambertian,
-    models::{Model, Sphere},
-    vec3::{Color, Point3},
-};
-use crate::{
-    materials::{Dielectric, Metal},
-    ray::{HitRecord, Ray},
-};
+use crate::materials::*;
+use crate::models::{Model, Sphere};
+use crate::ray::{HitRecord, Ray};
+use crate::vec3::{Color, Point3};
+
 use itertools::Itertools;
 use rand::Rng;
 
