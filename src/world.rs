@@ -21,8 +21,8 @@ impl World {
         }
     }
 
-    pub fn add_object(&mut self, object: impl Model + 'static) {
-        self.objects.push(Box::new(object));
+    pub fn add_object(&mut self, object: Box<dyn Model>) {
+        self.objects.push(object);
     }
 
     pub fn hit(&self, ray: &Ray) -> Option<HitRecord> {
@@ -43,38 +43,38 @@ impl World {
         let mut world = Self::new();
         let mut rng = rand::thread_rng();
 
-        world.add_object(Sphere::new(
+        world.add_object(Box::new(Sphere::new(
             Point3::new(0.0, -1000.0, 0.0),
             1000.0,
             Lambertian {
                 albedo: Color::new(0.5, 0.5, 0.5),
             },
-        ));
+        )));
 
-        world.add_object(Sphere::new(
+        world.add_object(Box::new(Sphere::new(
             Point3::new(0.0, 1.0, 0.0),
             1.0,
             Dielectric {
                 refraction_index: 1.5,
             },
-        ));
+        )));
 
-        world.add_object(Sphere::new(
+        world.add_object(Box::new(Sphere::new(
             Point3::new(-4.0, 1.0, 0.0),
             1.0,
             Lambertian {
                 albedo: Color::new(0.4, 0.2, 0.1),
             },
-        ));
+        )));
 
-        world.add_object(Sphere::new(
+        world.add_object(Box::new(Sphere::new(
             Point3::new(4.0, 1.0, 0.0),
             1.0,
             Metal {
                 albedo: Color::new(0.7, 0.6, 0.5),
                 fuzz: 0.0,
             },
-        ));
+        )));
 
         for (x, z) in (-10..6).cartesian_product(-10..10) {
             if x == 4 || x == 0 || x == -4 {
@@ -89,32 +89,32 @@ impl World {
             );
             match rand::random::<u8>() % 5 {
                 0 => {
-                    world.add_object(Sphere::new(
+                    world.add_object(Box::new(Sphere::new(
                         p,
                         radius,
                         Lambertian {
                             albedo: Color::random(0.0, 1.0),
                         },
-                    ));
+                    )));
                 }
                 1 => {
-                    world.add_object(Sphere::new(
+                    world.add_object(Box::new(Sphere::new(
                         p,
                         radius,
                         Dielectric {
                             refraction_index: 1.5,
                         },
-                    ));
+                    )));
                 }
                 2 => {
-                    world.add_object(Sphere::new(
+                    world.add_object(Box::new(Sphere::new(
                         p,
                         radius,
                         Metal {
                             albedo: Color::random(0.0, 1.0),
                             fuzz: rng.gen_range(0.0..0.5),
                         },
-                    ));
+                    )));
                 }
                 _ => {}
             }
