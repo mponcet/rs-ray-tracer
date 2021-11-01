@@ -16,11 +16,11 @@ use crate::world::World;
 struct PPMImage {
     width: usize,
     height: usize,
-    pixels: Vec<Color>,
+    pixels: Vec<Vec<Color>>,
 }
 
 impl PPMImage {
-    fn new(width: usize, height: usize, pixels: Vec<Color>) -> Self {
+    fn new(width: usize, height: usize, pixels: Vec<Vec<Color>>) -> Self {
         Self {
             width,
             height,
@@ -34,15 +34,17 @@ impl fmt::Display for PPMImage {
         write!(f, "P3\n{} {}\n255\n", self.width, self.height)?;
 
         let mut count = 0;
-        for pixel in &self.pixels {
-            let rgb = pixel.to_rgb();
-            write!(f, "{} {} {}", rgb.0, rgb.1, rgb.2).unwrap();
-            if count >= 6 {
-                write!(f, "\n")?;
-                count = 0;
-            } else {
-                write!(f, " ")?;
-                count += 1;
+        for pixel_j in &self.pixels {
+            for pixel in pixel_j {
+                let rgb = pixel.to_rgb();
+                write!(f, "{} {} {}", rgb.0, rgb.1, rgb.2).unwrap();
+                if count >= 6 {
+                    write!(f, "\n")?;
+                    count = 0;
+                } else {
+                    write!(f, " ")?;
+                    count += 1;
+                }
             }
         }
 

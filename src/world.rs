@@ -7,7 +7,7 @@ use itertools::Itertools;
 use rand::Rng;
 
 pub struct World {
-    objects: Vec<Box<dyn Model>>,
+    objects: Vec<Box<dyn Model + Sync>>,
     t_min: f64,
     t_max: f64,
 }
@@ -21,7 +21,7 @@ impl World {
         }
     }
 
-    pub fn add_object(&mut self, object: Box<dyn Model>) {
+    pub fn add_object(&mut self, object: Box<dyn Model + Sync>) {
         self.objects.push(object);
     }
 
