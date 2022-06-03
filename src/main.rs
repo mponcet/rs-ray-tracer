@@ -39,7 +39,7 @@ impl fmt::Display for PPMImage {
                 let rgb = pixel.to_rgb();
                 write!(f, "{} {} {}", rgb.0, rgb.1, rgb.2).unwrap();
                 if count >= 6 {
-                    write!(f, "\n")?;
+                    writeln!(f)?;
                     count = 0;
                 } else {
                     write!(f, " ")?;
@@ -48,7 +48,7 @@ impl fmt::Display for PPMImage {
             }
         }
 
-        write!(f, "\n")
+        writeln!(f)
     }
 }
 

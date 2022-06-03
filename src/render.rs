@@ -7,7 +7,7 @@ use rand::Rng;
 use rayon::prelude::*;
 
 fn ray_color(ray: &Ray, world: &World, depth: usize) -> Color {
-    if depth <= 0 {
+    if depth == 0 {
         Color::new(0.0, 0.0, 0.0)
     } else if let Some(hitrec) = world.hit(ray) {
         if let Some(scatterd) = hitrec.material.scatter(ray, &hitrec) {
@@ -37,7 +37,7 @@ pub fn render(world: &World, camera: &Camera) -> Vec<Vec<Color>> {
                         let v = (j_rev as f64 + rng.gen_range(0.0..=1.0))
                             / (config::IMAGE_HEIGHT - 1) as f64;
                         let ray = camera.get_ray(u, v);
-                        color = color + ray_color(&ray, &world, config::MAX_DEPTH);
+                        color = color + ray_color(&ray, world, config::MAX_DEPTH);
                     }
 
                     let scale = 1.0 / config::SAMPLES_PER_PIXEL as f64;

@@ -152,7 +152,7 @@ impl Color {
         }
     }
 
-    pub fn to_rgb(&self) -> (u8, u8, u8) {
+    pub fn to_rgb(self) -> (u8, u8, u8) {
         (
             (256.0 * Self::clamp(self.0, 0.0, 0.999)) as u8,
             (256.0 * Self::clamp(self.1, 0.0, 0.999)) as u8,
